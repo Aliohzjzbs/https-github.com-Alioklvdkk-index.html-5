@@ -6,6 +6,23 @@
 <title>موقع فيديوهات المستخدم - Dark Web Maze</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
+
+.thumb-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;  /* نفس نسبة يوتيوب */
+  background: #041227;
+  overflow: hidden;
+}
+.thumb, video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: none;
+  outline: none;
+}
+
   :root { --bg1:#06070b; --bg2:#071227; --accent:#00e6a8; }
   *{box-sizing:border-box;font-family: 'Orbitron', sans-serif;}
   body{margin:0; min-height:100vh; background:linear-gradient(180deg,var(--bg1),#041226); color:#dfefff; overflow-x:hidden;}
@@ -36,7 +53,28 @@
   .play-icon:hover{transform:translate(-50%,-50%) scale(1.1);}
   video{width:100%;height:160px;display:block;border:none;outline:none;}
   .card-body{padding:12px;}
-  .title{font-size:14px; font-weight:700; margin-bottom:8px;}
+  .title-container{padding:10px; background:rgba(0,0,0,0.3);}
+  .title{
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+    max-height:3.6em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+  }
+  .title.expanded{max-height:none;-webkit-line-clamp:unset;}
+  .read-more-btn, .copy-btn, .hide-btn{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:12px;
+    cursor:pointer;
+    margin-top:5px;
+    margin-left:5px;
+  }
   .controls{display:flex; gap:8px; align-items:center;}
   .btn{padding:8px 10px;border-radius:8px;border:none; cursor:pointer; font-weight:700;}
   .buy{background:var(--accent); color:#002; flex:1;}
@@ -48,7 +86,6 @@
   }
   .hero h1{margin:0;font-size:20px;}
   .hero p{margin:0;color:#9fb7ff;font-size:13px}
-
   .profile-btn{
     position:fixed;
     bottom:22px; right:22px;
@@ -62,7 +99,6 @@
     cursor:pointer;
     z-index:999;
   }
-
   #profileModal{
     position:fixed;
     top:0;left:0;right:0;bottom:0;
@@ -75,38 +111,50 @@
     overflow-y:auto;
     z-index:2000;
   }
-  .profile-card{
-    text-align:center;
-    color:#eaffff;
-  }
-  .profile-pic{
-    width:120px; height:120px;
-    border-radius:50%;
-    object-fit:cover;
-    border:2px solid var(--accent);
-  }
+  .profile-card{text-align:center;color:#eaffff;}
+  .profile-pic{width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);}
   .uid{margin:10px 0;color:var(--accent);font-size:14px;}
   .devs{margin-top:30px;width:100%;max-width:500px;}
   .dev{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);padding:10px;border-radius:10px;margin-bottom:10px;}
   .dev img{width:50px;height:50px;border-radius:50%;object-fit:cover;}
   .stars{color:gold;font-size:14px;}
-  .close-btn{
-    position:absolute;top:20px;right:20px;
-    background:none;border:none;color:#fff;font-size:26px;cursor:pointer;
+  .close-btn{position:absolute;top:20px;right:20px;background:none;border:none;color:#fff;font-size:26px;cursor:pointer;}
+  #maintenancePage,#updatePage{
+    display:none;
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.95);
+    color:#fff;z-index:5000;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;
   }
+  .btn-update{background:var(--accent);color:#001;padding:10px 20px;border:none;border-radius:10px;font-weight:700;cursor:pointer;margin-top:20px;}
+  
+
 </style>
 </head>
 <body>
+
+<div id="maintenancePage">
+  <h1>🚧 الموقع تحت الصيانة</h1>
+  <p>سيتم العودة قريبًا... يرجى المحاولة لاحقًا</p>
+</div>
+
+<div id="updatePage">
+  <h1>📦 تحديث جديد متوفر</h1>
+  <p>يجب تحديث التطبيق للاستمرار في استخدامه</p>
+  <button id="updateBtn" class="btn-update">تحميل التحديث</button>
+</div>
+
+<div id="mainContent" style="display:none;">
   <header>
     <div class="brand">Dark Web Maze</div>
-    <div class="darkbox">𝐃𝐚𝐫𝐤 𝗪𝗲𝗯 𝐌𝐚𝐳𝐞 𝗼𝗳 𝐃𝐚𝐫𝐤𝐧𝐞𝘀𝐬</div>
+    <div class="darkbox">𝐃𝐚𝐫𝐤 𝗪𝗲𝗯 𝐌𝐚𝐳𝐞 𝗼𝗳 𝐃𝐚𝐫𝐤𝐧𝐞𝐬𝐬</div>
   </header>
 
   <div class="container">
     <div class="hero">
       <div>
         <h1>أحدث الفيديوهات المنشورة</h1>
-        <p>𝐃𝐚𝐫𝐤 𝗪𝗲𝗯 𝐌𝐚𝐳𝐞 𝗼𝗳 𝐃𝐚𝐫𝐤𝐧𝐞𝘀𝐬</p>
+        <p>𝐃𝐚𝐫𝐤 𝗪𝗲𝗯 𝐌𝐚𝐳𝐞 𝗼𝗳 𝐃𝐚𝐫𝐤𝐧𝐞𝐬𝐬</p>
       </div>
     </div>
 
@@ -119,11 +167,12 @@
   <div id="profileModal">
     <button class="close-btn" onclick="closeProfile()">×</button>
     <div class="profile-card">
-      <img src="https://img.freepik.com/free-photo/dark-background-hacked-compromised-system-3d-illustration_1419-2810.jpg" class="profile-pic" alt="Hacker Profile">
+      <img src="https://img.freepik.com/free-photo/dark-background-hacked-compromised-system-3d-illustration_1419-2810.jpg" class="profile-pic">
       <div class="uid" id="deviceId"></div>
       <div class="devs" id="devsList"></div>
     </div>
   </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -141,6 +190,26 @@ const firebaseUserConfig = {
 const userApp = firebase.initializeApp(firebaseUserConfig, "userApp");
 const db = userApp.database();
 
+const CURRENT_VERSION = 1.0;
+
+async function checkSystem(){
+  const snap = await db.ref('settings').once('value');
+  const s = snap.val() || {};
+  if(s.maintenance){
+    document.getElementById('maintenancePage').style.display='flex';
+    return;
+  }
+  const upd = s.update || {};
+  if(upd.force && parseFloat(upd.version) > CURRENT_VERSION){
+    document.getElementById('updatePage').style.display='flex';
+    document.getElementById('updateBtn').onclick=()=>{window.location.href=upd.url;};
+    return;
+  }
+  document.getElementById('mainContent').style.display='block';
+  loadVideosRealtime();
+}
+checkSystem();
+
 const grid = document.getElementById('videosGrid');
 const empty = document.getElementById('empty');
 let currentPlaying = null;
@@ -151,24 +220,38 @@ function renderVideoCard(v){
   const thumb = v.thumbURL || 'https://via.placeholder.com/640x360?text=No+Thumbnail';
   const safeTitle = escapeHtml(v.title || 'بدون عنوان');
   const videoId = 'vid_' + Math.random().toString(36).substring(2,9);
+  const shortId = 't_' + Math.random().toString(36).substring(2,9);
   
   div.innerHTML = `
+    <div class="title-container">
+      <div id="${shortId}" class="title">${safeTitle}</div>
+      <button class="read-more-btn" onclick="toggleReadMore('${shortId}', this)">قراءة المزيد</button>
+      <button class="copy-btn" onclick="copyText('${shortId}')">📋 نسخ النص</button>
+    </div>
     <div class="thumb-container" id="thumbContainer_${videoId}">
       <img src="${thumb}" class="thumb" alt="${safeTitle}">
       <div class="play-icon" id="playIcon_${videoId}" onclick="playVideo('${videoId}', '${v.videoURL.replace(/'/g,"\\'")}')">▶</div>
     </div>
     <div class="card-body">
-      <div class="title">${safeTitle}</div>
       <div style="font-size:12px;color:#9fb7ff;margin-bottom:8px">${new Date(v.publishedAt||0).toLocaleString()}</div>
-      <div class="controls">
-        
-      </div>
+      <div class="controls"> 
     </div>`;
   grid.appendChild(div);
 }
 
+function toggleReadMore(id, btn){
+  const title = document.getElementById(id);
+  title.classList.toggle('expanded');
+  btn.textContent = title.classList.contains('expanded') ? 'إخفاء النص' : 'قراءة المزيد';
+}
+
+function copyText(id){
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text);
+  alert('تم نسخ النص ✅');
+}
+
 function playVideo(id, url){
-  // ✅ إيقاف الفيديو القديم إذا كان شغال
   if (currentPlaying && currentPlaying !== id) {
     const oldContainer = document.getElementById(`thumbContainer_${currentPlaying}`);
     if (oldContainer) {
@@ -178,7 +261,6 @@ function playVideo(id, url){
       oldContainer.innerHTML = `<img src="${oldThumb}" class="thumb" alt=""><div class="play-icon" onclick="playVideo('${currentPlaying}', '${oldVideo?.src || ''}')">▶</div>`;
     }
   }
-
   const container = document.getElementById(`thumbContainer_${id}`);
   if (!container) return;
   const thumb = container.querySelector('.thumb')?.src || '';
@@ -221,7 +303,6 @@ function loadVideosRealtime(){
     }
   });
 }
-loadVideosRealtime();
 
 function getUniqueId(){
   let uid = localStorage.getItem('device_uid');
