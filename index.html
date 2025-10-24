@@ -226,15 +226,14 @@ function renderVideoCard(v){
 }
 
 function toggleReadMore(id, btn){
-  const title = document.getElementById(id);
-  title.classList.toggle('expanded');
-  btn.textContent = title.classList.contains('expanded') ? 'إخفاء النص' : 'قراءة المزيد';
+const t = document.getElementById(id);
+t.classList.toggle('expanded');
+btn.textContent = t.classList.contains('expanded') ? 'إخفاء النص' : 'قراءة المزيد';
 }
 
 function copyText(id){
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text);
-  alert('تم نسخ النص ✅');
+const txt = document.getElementById(id).textContent;
+navigator.clipboard.writeText(txt).catch(()=>{});
 }
 
 function playVideo(id, url){
